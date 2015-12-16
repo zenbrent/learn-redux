@@ -1,0 +1,10 @@
+body {
+  background-color: #efefef;
+}
+
+html {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
