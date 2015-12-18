@@ -1,6 +1,4 @@
 import chai, {expect} from "chai";
-import things from "chai-things";
-chai.use(things);
 
 import {createStore} from "../client_src/createStore";
 
