@@ -6,16 +6,18 @@ import "./index.css";
 
 import {history} from "./history";
 
-import counter from "./something";
+import Counter from "./Counter";
 
 var Main = props => (
     <div className="main_view">
-        Main!
+        {props.children}
     </div>
 );
 
 ReactDOM.render((
     <Router history={history}>
-        <Route path="*" component={Main} />
+    <Route path="/" component={Main}>
+    <Route path="/counter" component={Counter} />
+    </Route>
     </Router>
 ), window["app-root"]);
