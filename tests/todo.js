@@ -27,6 +27,38 @@ describe("todo", () => {
         ).to.deep.equal(stateAfter);
     });
 
+    it("should add todos", () => {
+        const stateBefore = [{
+            id: 0,
+            text: "lern you a rdux",
+            completed: false
+        }, {
+            id: 1,
+            text: "todos!",
+            completed: false
+        }];
+        const action = {
+            type: "TOGGLE_TODO",
+            id: 1
+        };
+        const stateAfter = [{
+            id: 0,
+            text: "lern you a rdux",
+            completed: false
+        }, {
+            id: 1,
+            text: "todos!",
+            completed: true
+        }];
+
+        deepFreeze(stateBefore);
+        deepFreeze(action);
+
+        expect(
+            todos(stateBefore, action)
+        ).to.deep.equal(stateAfter);
+    });
+
     it("should ", () => {
     });
 });
