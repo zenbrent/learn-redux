@@ -3,6 +3,7 @@ import things from "chai-things";
 chai.use(things);
 
 import { todos } from "../client_src/todo";
+import deepFreeze from "deep-freeze";
 
 describe("todo", () => {
     it("should add todos", () => {
@@ -18,8 +19,11 @@ describe("todo", () => {
             completed: false
         }];
 
+        deepFreeze(stateBefore);
+        deepFreeze(action);
+
         expect(
-            todos(stateBefore, action).toJS()
+            todos(stateBefore, action)
         ).to.deep.equal(stateAfter);
     });
 
