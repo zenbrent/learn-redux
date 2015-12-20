@@ -1,4 +1,3 @@
-var autoprefixer = require("autoprefixer");
 var nestedCss = require("postcss-nested");
 
 module.exports = {
@@ -22,9 +21,7 @@ module.exports = {
 
     postcss: function () {
         return [
-            nestedCss,
-            autoprefixer,
-            // cssnano //minification
+            nestedCss
         ];
     }
 }

@@ -1,6 +1,5 @@
 import koa from "koa";
 import {join} from "path";
-import BodyParser from "koa-better-body";
 
 import {staticResources, defaultRoute} from "./static";
 
@@ -17,9 +16,6 @@ app.use(function *(next){
 });
 
 app.use(staticResources());
-
-// load content from POST Body
-app.use(BodyParser({ formLimit: "4mb" }));
 
 // Add the routes
 app.use(makeRouter(defaultRoute));
