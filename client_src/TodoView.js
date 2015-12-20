@@ -4,21 +4,36 @@ import {store} from "./todo";
 
 let nextTodoId = 0;
 
-const Todo = ({todo}) => (
-    <li onClick={() => {
-            store.dispatch({
-                type: "TOGGLE_TODO",
-                id: todo.id
-            });
-        }}
+
+// Presentational components: they don't do anything, they just show things.
+const Todo = ({
+    onClick,
+    completed, text
+}) => (
+    <li onClick={onClick}
         style={{
             textDecoration: 
-                todo.completed ?
+                completed ?
                 "line-through" :
                 "none"
         }}>
-        {todo.text}
+        {text}
     </li>
+);
+
+const TodoList = ({
+    todos,
+    onTodoClick
+}) => (
+    <ul>
+        {todos.map(todo =>
+            <Todo
+                key={todo.id}
+                {...todo}
+                onClick={() => onTodoClick(todo.id)}
+                />
+        )}
+    </ul>
 );
 
 const FilterLink = ({
@@ -85,10 +100,14 @@ class TodoApp extends Component {
                     <FilterLink filter="SHOW_ACTIVE" currentFilter={visibilityFilter}>Active</FilterLink> {", "}
                     <FilterLink filter="SHOW_COMPLETED" currentFilter={visibilityFilter}>Completed</FilterLink>
                 </p>
-                <ul>
-                    {visibleTodos.map(todo => <Todo key={todo.id} todo={todo} />
-                    )}
-                </ul>
+                <TodoList
+                    todos={visibleTodos}
+                    onTodoClick={id =>
+                        store.dispatch({
+                            type: "TOGGLE_TODO",
+                            id
+                        })
+                    } />
             </form>
         );
     }
