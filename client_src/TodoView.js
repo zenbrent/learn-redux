@@ -4,8 +4,69 @@ import {store} from "./todo";
 
 let nextTodoId = 0;
 
+const Todo = ({todo}) => (
+    <li onClick={() => {
+            store.dispatch({
+                type: "TOGGLE_TODO",
+                id: todo.id
+            });
+        }}
+        style={{
+            textDecoration: 
+                todo.completed ?
+                "line-through" :
+                "none"
+        }}>
+        {todo.text}
+    </li>
+);
+
+const FilterLink = ({
+    filter,
+    currentFilter,
+    children
+}) =>  {
+    if (filter === currentFilter) {
+        return <span>{children}</span>
+    }
+    return (
+        <a href="#"
+            onClick={e => {
+                e.preventDefault();
+                store.dispatch({
+                    type: "SET_VISIBILITY_FILTER",
+                    filter
+                });
+            }}
+        >
+            {children}
+        </a>
+    );
+};
+
+const getVisibleTodos = (todos, filter) => {
+    switch (filter) {
+        case "SHOW_ALL":
+            return todos;
+        case "SHOW_COMPLETED":
+            return todos.filter(t => t.completed);
+        case "SHOW_ACTIVE":
+            return todos.filter(t => !t.completed);
+    }
+}
+
 class TodoApp extends Component {
     render () {
+        const {
+            todos,
+            visibilityFilter
+        } = this.props;
+
+        const visibleTodos = getVisibleTodos(
+            todos,
+            visibilityFilter
+        );
+
         return (
             <form onSubmit={(e) => {
                 e.preventDefault();
@@ -16,27 +77,16 @@ class TodoApp extends Component {
                 });
                 this.input.value = "";
             }}>
-                <input ref={node => {
-                    this.input = node;
-                }} />
+                <input ref={node => { this.input = node; }} />
                 <input type="submit" value="Add Todo" />
+                <p>
+                    Show: {" "}
+                    <FilterLink filter="SHOW_ALL" currentFilter={visibilityFilter}>All</FilterLink> {", "}
+                    <FilterLink filter="SHOW_ACTIVE" currentFilter={visibilityFilter}>Active</FilterLink> {", "}
+                    <FilterLink filter="SHOW_COMPLETED" currentFilter={visibilityFilter}>Completed</FilterLink>
+                </p>
                 <ul>
-                    {this.props.todos.map(todo =>
-                        <li key={todo.id}
-                            onClick={() => {
-                                store.dispatch({
-                                    type: "TOGGLE_TODO",
-                                    id: todo.id
-                                });
-                            }}
-                            style={{
-                                textDecoration: 
-                                    todo.completed ?
-                                    "line-through" :
-                                    "none"
-                            }}>
-                            {todo.text}
-                        </li>
+                    {visibleTodos.map(todo => <Todo key={todo.id} todo={todo} />
                     )}
                 </ul>
             </form>
@@ -47,22 +97,22 @@ class TodoApp extends Component {
 // The root of the the Todo page.
 export default React.createClass({
     getTodos () {
-        return store.getState().todos;
+        return store.getState();
     },
 
     componentDidMount () {
         store.subscribe(() => {
-            this.setState({ value: this.getTodos() });
+            this.setState({ appState: this.getTodos() });
         });
     },
 
     getInitialState () {
         return {
-            value: this.getTodos(),
+            appState: this.getTodos(),
         };
     },
 
     render () {
-        return <TodoApp todos={ this.state.value } />
+        return <TodoApp {...this.state.appState} />
     }
 });
