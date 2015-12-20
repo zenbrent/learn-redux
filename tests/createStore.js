@@ -1,6 +1,6 @@
 import chai, {expect} from "chai";
 
-import {createStore} from "../client_src/createStore";
+import {createStore} from "../client_src/reduxImplementation";
 
 const counter = (state = 0, action) => {
     switch (action.type) {
