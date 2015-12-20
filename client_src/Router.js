@@ -6,8 +6,8 @@ import "./index.css";
 
 import {history} from "./history";
 
-import Counter from "./Counter";
-import Todo from "./TodoView";
+import Counter from "./pages/Counter";
+import Todo from "./pages/Todo";
 
 var Main = props => (
     <div className="main_view">

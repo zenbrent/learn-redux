@@ -1,6 +1,6 @@
 import React from "react";
 
-import {store} from "./simpleCounter";
+import {store} from "../../simpleCounter";
 window.store = store;
 
 // "Dump component": it doesn't have any business logic, it only shows the current application state.

@@ -1,40 +1,9 @@
 import React, {Component} from "react";
 
-import {store} from "./todo";
+import {store} from "../../todo";
+import {TodoList} from "./Todo";
 
 let nextTodoId = 0;
-
-
-// Presentational components: they don't do anything, they just show things.
-const Todo = ({
-    onClick,
-    completed, text
-}) => (
-    <li onClick={onClick}
-        style={{
-            textDecoration: 
-                completed ?
-                "line-through" :
-                "none"
-        }}>
-        {text}
-    </li>
-);
-
-const TodoList = ({
-    todos,
-    onTodoClick
-}) => (
-    <ul>
-        {todos.map(todo =>
-            <Todo
-                key={todo.id}
-                {...todo}
-                onClick={() => onTodoClick(todo.id)}
-                />
-        )}
-    </ul>
-);
 
 const FilterLink = ({
     filter,
