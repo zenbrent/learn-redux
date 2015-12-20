@@ -7,6 +7,7 @@ import "./index.css";
 import {history} from "./history";
 
 import Counter from "./Counter";
+import Todo from "./TodoView";
 
 var Main = props => (
     <div className="main_view">
@@ -18,6 +19,7 @@ ReactDOM.render((
     <Router history={history}>
     <Route path="/" component={Main}>
     <Route path="/counter" component={Counter} />
+    <Route path="/todo" component={Todo} />
     </Route>
     </Router>
 ), window["app-root"]);
