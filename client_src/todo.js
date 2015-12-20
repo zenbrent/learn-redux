@@ -32,10 +32,7 @@ const todo = (state, action) => {
 const todos = (state = [], action) => {
     switch (action.type) {
         case "ADD_TODO":
-            return [
-                ...state,
-                todo(undefined, action)
-            ];
+            return [ ...state, todo(undefined, action) ];
         case "TOGGLE_TODO":
             return state.map(t => todo(t, action));
         default:
@@ -43,4 +40,30 @@ const todos = (state = [], action) => {
     }
 };
 
-export { todos };
+const visibilityFilter = (state = "SHOW_ALL", action) => {
+    switch (action.type) {
+        case "SET_VISIBILITY_FILTER":
+            return action.filter;
+        default:
+            return state;
+    }
+}
+
+// Build a more general app store using reducer composition that includes the different subdomains.
+// Pass actions on to them.
+const todoApp = (state = {}, action) => {
+    return {
+        todos: todos(
+            state.todos,
+            action
+        ),
+        visibilityFilter: visibilityFilter(
+            state.visibilityFilter,
+            action
+        )
+    };
+};
+
+const store = createStore(todoApp);
+
+export { store, todos };
