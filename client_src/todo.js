@@ -1,4 +1,4 @@
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 
 /**
  * Reducer composition:  Different reducers specify how different parts of the
@@ -51,18 +51,10 @@ const visibilityFilter = (state = "SHOW_ALL", action) => {
 
 // Build a more general app store using reducer composition that includes the different subdomains.
 // Pass actions on to them.
-const todoApp = (state = {}, action) => {
-    return {
-        todos: todos(
-            state.todos,
-            action
-        ),
-        visibilityFilter: visibilityFilter(
-            state.visibilityFilter,
-            action
-        )
-    };
-};
+const todoApp = combineReducers({
+    todos,
+    visibilityFilter
+});
 
 const store = createStore(todoApp);
 
