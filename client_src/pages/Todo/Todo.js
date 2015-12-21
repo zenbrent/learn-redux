@@ -1,6 +1,8 @@
 import { connect } from "react-redux";
 import React from "react";
 
+import { toggleTodo } from "../../actionCreators/todo";
+
 // Presentational components: they don't do anything, they just show things.
 const Todo = ({
     onClick,
@@ -55,10 +57,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        onTodoClick: id => dispatch({
-            type: "TOGGLE_TODO",
-            id
-        })
+        onTodoClick: id => dispatch(toggleTodo(id))
     }
 }
 const VisibleTodoList = connect(

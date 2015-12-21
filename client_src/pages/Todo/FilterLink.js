@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import { connect } from "react-redux";
 
 import {store} from "../../todo";
+import { setVisibilityFilter } from "../../actionCreators/todo";
 
 // Link only specifies the appearance of the component.
 const Link = ({
@@ -37,10 +38,7 @@ const mapDispatchToProps = (
     ownProps
 ) => {
     return {
-        onClick: () => dispatch({
-            type: "SET_VISIBILITY_FILTER",
-            filter: ownProps.filter
-        })
+        onClick: () => dispatch(setVisibilityFilter(ownProps.filter))
     };
 };
 

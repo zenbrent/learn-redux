@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import React from "react";
 
-let nextTodoId = 0;
+import { addTodo } from "../../actionCreators/todo";
 
 // 2nd argument in a functional component is the context.
 let AddTodo = ({ dispatch }) => {
@@ -9,11 +9,7 @@ let AddTodo = ({ dispatch }) => {
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            dispatch({
-                type: "ADD_TODO",
-                id: nextTodoId++,
-                text: input.value
-            })
+            dispatch(addTodo(input.value))
             input.value = "";
         }}>
             <input ref={node => { input = node; }} />
