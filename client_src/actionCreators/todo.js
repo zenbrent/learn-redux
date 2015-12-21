@@ -22,8 +22,16 @@ const toggleTodo = (id) => {
     };
 };
 
+const removeTodo = (id) => {
+    return {
+        type: "REMOVE_TODO",
+        id
+    };
+};
+
 export {
     addTodo,
+    removeTodo,
     setVisibilityFilter,
     toggleTodo
 };

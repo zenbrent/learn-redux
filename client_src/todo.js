@@ -36,6 +36,8 @@ const todos = (state = [], action) => {
             return [ ...state, todo(undefined, action) ];
         case "TOGGLE_TODO":
             return state.map(t => todo(t, action));
+        case "REMOVE_TODO":
+            return state.filter(t => t.id !== action.id);
         default:
             return state;
     }
@@ -88,6 +90,25 @@ const testStore = () => {
     store.dispatch({
         type: "SET_VISIBILITY_FILTER",
         filter: "SHOW_COMPLETED"
+    });
+    console.log("Current state:");
+    console.log(store.getState());
+    console.log("----------------");
+
+    console.log("Dispatching ADD_TODO");
+    store.dispatch({
+        type: "ADD_TODO",
+        id: 1,
+        text: "A todo!"
+    });
+    console.log("Current state:");
+    console.log(store.getState());
+    console.log("----------------");
+
+    console.log("Dispatching REMOVE_TODO:");
+    store.dispatch({
+        type: "REMOVE_TODO",
+        id: 0
     });
     console.log("Current state:");
     console.log(store.getState());

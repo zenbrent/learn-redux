@@ -2,11 +2,12 @@ import { connect } from "react-redux";
 import React from "react";
 
 import { toggleTodo } from "../../actionCreators/todo";
+import { Remove } from "./RemoveTodo";
 
 // Presentational components: they don't do anything, they just show things.
 const Todo = ({
     onClick,
-    completed, text
+    completed, text, id
 }) => (
     <li onClick={onClick}
         style={{
@@ -15,7 +16,8 @@ const Todo = ({
                 "line-through" :
                 "none"
         }}>
-        {text}
+        {text} {" "}
+        <Remove id={id} />
     </li>
 );
 
