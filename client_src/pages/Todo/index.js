@@ -26,12 +26,16 @@ const getVisibleTodos = (todos, filter) => {
     }
 }
 
-const AddTodo = ({onAddClick}) => {
+const AddTodo = () => {
     let input;
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            onAddClick(input.value);
+            store.dispatch({
+                type: "ADD_TODO",
+                id: nextTodoId++,
+                text: input.value
+            })
             input.value = "";
         }}>
             <input ref={node => { input = node; }} />
@@ -40,42 +44,51 @@ const AddTodo = ({onAddClick}) => {
     );
 }
 
-const TodoApp = ({ todos, visibilityFilter }) => (
-    <div>
-        <AddTodo
-        onAddClick={text => store.dispatch({
-            type: "ADD_TODO",
-            id: nextTodoId++,
-            text
-        })} />
-        <Footer />
-        <TodoList
-            todos={getVisibleTodos(
-                todos,
-                visibilityFilter
-            )}
-            onTodoClick={id =>
-                store.dispatch({
-                    type: "TOGGLE_TODO",
-                    id
-                })
-            } />
-    </div>
-);
-
-// The root of the the Todo page.
-export default React.createClass({
+class VisibleTodoList extends Component {
     componentDidMount () {
         this.unsubscribe = store.subscribe(() =>
             this.forceUpdate()
         );
-    },
+    }
 
     componentWillUnmount () {
         this.unsubscribe();
-    },
+    }
 
     render () {
-        return <TodoApp {...store.getState()} />
+        const props = this.props;
+        const state = store.getState();
+
+        return (
+            <TodoList
+                todos={
+                    getVisibleTodos(
+                        state.todos,
+                        state.visibilityFilter
+                    )
+                }
+                onTodoClick={id =>
+                    store.dispatch({
+                        type: "TOGGLE_TODO",
+                        id
+                    })
+                }
+            />
+        );
     }
-});
+}
+
+// General approach:
+// Extract presentational components
+// If there is too much boilerplate passing props through,
+//     then create containers around them that load the data and specify the behavior.
+const TodoApp = () => (
+    <div>
+        <AddTodo />
+        <Footer />
+        <VisibleTodoList />
+    </div>
+);
+
+// The root of the the Todo page.
+export default () => <TodoApp />;
