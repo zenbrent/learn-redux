@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 
-import {todoApp} from "../../todo";
-import {TodoList} from "./Todo";
-import {FilterLink} from "./FilterLink";
+import { todoApp } from "../../todo";
+import { TodoList } from "./Todo";
+import { FilterLink } from "./FilterLink";
 import { createStore } from "redux";
+import { Provider } from "react-redux";
 
 let nextTodoId = 0;
 
@@ -103,22 +104,8 @@ const TodoApp = () => (
     </div>
 );
 
-// Create a "wormhole" from the Provider component to all the children views.
+// Provider is a "wormhole" from the Provider component to all the children views.
 // Context should usually only be used for dependency injection.
-class Provider extends Component {
-    getChildContext () {
-        return {
-            store: this.props.store
-        };
-    }
-
-    render () {
-        return this.props.children;
-    }
-}
-Provider.childContextTypes = {
-    store: React.PropTypes.object
-};
 
 // The root of the the Todo page.
 export default () => (
