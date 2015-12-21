@@ -1,10 +1,10 @@
 import React, {Component} from "react";
 
 import { todoApp } from "../../todo";
-import { TodoList } from "./Todo";
+import { VisibleTodoList } from "./Todo";
 import { FilterLink } from "./FilterLink";
 import { createStore } from "redux";
-import { Provider, connect } from "react-redux";
+import { Provider } from "react-redux";
 
 let nextTodoId = 0;
 
@@ -20,24 +20,13 @@ Footer.contextTypes = {
     store: React.PropTypes.object
 };
 
-const getVisibleTodos = (todos, filter) => {
-    switch (filter) {
-        case "SHOW_ALL":
-            return todos;
-        case "SHOW_COMPLETED":
-            return todos.filter(t => t.completed);
-        case "SHOW_ACTIVE":
-            return todos.filter(t => !t.completed);
-    }
-}
-
 // 2nd argument in a functional component is the context.
-const AddTodo = (props, { store }) => {
+let AddTodo = ({ dispatch }) => {
     let input;
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            store.dispatch({
+            dispatch({
                 type: "ADD_TODO",
                 id: nextTodoId++,
                 text: input.value
@@ -49,35 +38,14 @@ const AddTodo = (props, { store }) => {
         </form>
     );
 }
-AddTodo.contextTypes = {
-    store: React.PropTypes.object
-};
+AddTodo = connect()(AddTodo);
 
-// mapStateToProps and mapDispatchToProps describe a container
-// component so well that it can be generated.
-const mapStateToProps = (state) => {
-    return {
-        todos: getVisibleTodos(
-            state.todos,
-            state.visibilityFilter
-        )
-    };
-}
+// AddTodo = connect(
+//     // there are no props that depend on the current state. Null tells it to not subscribe to the store.
+//     null,
+//     null // defaults to: dispatch => ({ dispatch })
+// )(AddTodo);
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onTodoClick: id => dispatch({
-            type: "TOGGLE_TODO",
-            id
-        })
-    }
-}
-
-const VisibleTodoList = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(TodoList); // Curried function, call it with the presentational component
-             // that you wanted to wrap and pass the props to.
 
 // General approach:
 // Extract presentational components
