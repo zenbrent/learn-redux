@@ -4,7 +4,7 @@ import { todoApp } from "../../todo";
 import { VisibleTodoList } from "./Todo";
 import { FilterLink } from "./FilterLink";
 import { createStore } from "redux";
-import { Provider } from "react-redux";
+import { Provider, connect } from "react-redux";
 
 let nextTodoId = 0;
 
