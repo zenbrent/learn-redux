@@ -103,6 +103,4 @@ const testStore = () => {
 };
 // testStore();
 
-
-const store = createStore(todoApp);
-export { store, todos };
+export { todos, todoApp };

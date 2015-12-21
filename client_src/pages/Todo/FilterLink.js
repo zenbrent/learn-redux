@@ -24,6 +24,7 @@ const Link = ({
 // Specifies the actual behavior of the component.
 export class FilterLink extends Component {
     componentDidMount () {
+        const { store } = this.props;
         this.unsubscribe = store.subscribe(() =>
             this.forceUpdate()
         );
@@ -35,6 +36,7 @@ export class FilterLink extends Component {
 
     render() {
         const props = this.props;
+        const { store } = this.props;
         const state = store.getState();
 
         return (

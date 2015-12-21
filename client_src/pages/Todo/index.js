@@ -1,17 +1,18 @@
 import React, {Component} from "react";
 
-import {store} from "../../todo";
+import {todoApp} from "../../todo";
 import {TodoList} from "./Todo";
 import {FilterLink} from "./FilterLink";
+import { createStore } from "redux";
 
 let nextTodoId = 0;
 
-const Footer = () => (
+const Footer = ({ store }) => (
     <p>
         Show: {" "}
-        <FilterLink filter="SHOW_ALL">All</FilterLink> {", "}
-        <FilterLink filter="SHOW_ACTIVE">Active</FilterLink> {", "}
-        <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
+        <FilterLink filter="SHOW_ALL" store={store}>All</FilterLink> {", "}
+        <FilterLink filter="SHOW_ACTIVE" store={store}>Active</FilterLink> {", "}
+        <FilterLink filter="SHOW_COMPLETED" store={store}>Completed</FilterLink>
     </p>
 )
 
@@ -26,7 +27,7 @@ const getVisibleTodos = (todos, filter) => {
     }
 }
 
-const AddTodo = () => {
+const AddTodo = ({ store }) => {
     let input;
     return (
         <form onSubmit={(e) => {
@@ -46,6 +47,7 @@ const AddTodo = () => {
 
 class VisibleTodoList extends Component {
     componentDidMount () {
+        const { store } = this.props;
         this.unsubscribe = store.subscribe(() =>
             this.forceUpdate()
         );
@@ -57,6 +59,7 @@ class VisibleTodoList extends Component {
 
     render () {
         const props = this.props;
+        const { store } = props;
         const state = store.getState();
 
         return (
@@ -82,13 +85,13 @@ class VisibleTodoList extends Component {
 // Extract presentational components
 // If there is too much boilerplate passing props through,
 //     then create containers around them that load the data and specify the behavior.
-const TodoApp = () => (
+const TodoApp = ({ store }) => (
     <div>
-        <AddTodo />
-        <Footer />
-        <VisibleTodoList />
+        <AddTodo store={store} />
+        <Footer store={store} />
+        <VisibleTodoList store={store} />
     </div>
 );
 
 // The root of the the Todo page.
-export default () => <TodoApp />;
+export default () => <TodoApp store={createStore(todoApp)} />;
