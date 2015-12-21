@@ -4,7 +4,7 @@ import { todoApp } from "../../todo";
 import { TodoList } from "./Todo";
 import { FilterLink } from "./FilterLink";
 import { createStore } from "redux";
-import { Provider } from "react-redux";
+import { Provider, connect } from "react-redux";
 
 let nextTodoId = 0;
 
@@ -53,44 +53,31 @@ AddTodo.contextTypes = {
     store: React.PropTypes.object
 };
 
-class VisibleTodoList extends Component {
-    componentDidMount () {
-        const { store } = this.context;
-        this.unsubscribe = store.subscribe(() =>
-            this.forceUpdate()
-        );
-    }
+// mapStateToProps and mapDispatchToProps describe a container
+// component so well that it can be generated.
+const mapStateToProps = (state) => {
+    return {
+        todos: getVisibleTodos(
+            state.todos,
+            state.visibilityFilter
+        )
+    };
+}
 
-    componentWillUnmount () {
-        this.unsubscribe();
-    }
-
-    render () {
-        const props = this.props;
-        const { store } = this.context;
-        const state = store.getState();
-
-        return (
-            <TodoList
-                todos={
-                    getVisibleTodos(
-                        state.todos,
-                        state.visibilityFilter
-                    )
-                }
-                onTodoClick={id =>
-                    store.dispatch({
-                        type: "TOGGLE_TODO",
-                        id
-                    })
-                }
-            />
-        );
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onTodoClick: id => dispatch({
+            type: "TOGGLE_TODO",
+            id
+        })
     }
 }
-VisibleTodoList.contextTypes = {
-    store: React.PropTypes.object
-};
+
+const VisibleTodoList = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TodoList); // Curried function, call it with the presentational component
+             // that you wanted to wrap and pass the props to.
 
 // General approach:
 // Extract presentational components
