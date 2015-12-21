@@ -2,29 +2,18 @@ import React, {Component} from "react";
 
 import {store} from "../../todo";
 import {TodoList} from "./Todo";
+import {FilterLink} from "./FilterLink";
 
 let nextTodoId = 0;
 
-const FilterLink = ({
-    filter,
-    currentFilter,
-    onClick,
-    children
-}) =>  {
-    if (filter === currentFilter) {
-        return <span>{children}</span>
-    }
-    return (
-        <a href="#"
-            onClick={e => {
-                e.preventDefault();
-                onClick(filter);
-            }}
-        >
-            {children}
-        </a>
-    );
-};
+const Footer = () => (
+    <p>
+        Show: {" "}
+        <FilterLink filter="SHOW_ALL">All</FilterLink> {", "}
+        <FilterLink filter="SHOW_ACTIVE">Active</FilterLink> {", "}
+        <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
+    </p>
+)
 
 const getVisibleTodos = (todos, filter) => {
     switch (filter) {
@@ -51,27 +40,6 @@ const AddTodo = ({onAddClick}) => {
     );
 }
 
-const Footer = ({
-    visibilityFilter,
-    onFilterClick
-}) => (
-    <p>
-        Show: {" "}
-        <FilterLink
-            filter="SHOW_ALL"
-            currentFilter={visibilityFilter}
-            onClick={onFilterClick}>All</FilterLink> {", "}
-        <FilterLink
-            filter="SHOW_ACTIVE"
-            currentFilter={visibilityFilter}
-            onClick={onFilterClick}>Active</FilterLink> {", "}
-        <FilterLink
-            filter="SHOW_COMPLETED"
-            currentFilter={visibilityFilter}
-            onClick={onFilterClick}>Completed</FilterLink>
-    </p>
-)
-
 const TodoApp = ({ todos, visibilityFilter }) => (
     <div>
         <AddTodo
@@ -80,12 +48,7 @@ const TodoApp = ({ todos, visibilityFilter }) => (
             id: nextTodoId++,
             text
         })} />
-        <Footer
-            visiblityFilter={visibilityFilter}
-            onFilterClick={filter => store.dispatch({
-                type: "SET_VISIBILITY_FILTER",
-                filter
-            })} />
+        <Footer />
         <TodoList
             todos={getVisibleTodos(
                 todos,
@@ -102,23 +65,17 @@ const TodoApp = ({ todos, visibilityFilter }) => (
 
 // The root of the the Todo page.
 export default React.createClass({
-    getTodos () {
-        return store.getState();
-    },
-
     componentDidMount () {
-        store.subscribe(() => {
-            this.setState({ appState: this.getTodos() });
-        });
+        this.unsubscribe = store.subscribe(() =>
+            this.forceUpdate()
+        );
     },
 
-    getInitialState () {
-        return {
-            appState: this.getTodos(),
-        };
+    componentWillUnmount () {
+        this.unsubscribe();
     },
 
     render () {
-        return <TodoApp {...this.state.appState} />
+        return <TodoApp {...store.getState()} />
     }
 });
