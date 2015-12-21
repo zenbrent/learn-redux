@@ -7,14 +7,17 @@ import { createStore } from "redux";
 
 let nextTodoId = 0;
 
-const Footer = ({ store }) => (
+const Footer = () => (
     <p>
         Show: {" "}
-        <FilterLink filter="SHOW_ALL" store={store}>All</FilterLink> {", "}
-        <FilterLink filter="SHOW_ACTIVE" store={store}>Active</FilterLink> {", "}
-        <FilterLink filter="SHOW_COMPLETED" store={store}>Completed</FilterLink>
+        <FilterLink filter="SHOW_ALL">All</FilterLink> {", "}
+        <FilterLink filter="SHOW_ACTIVE">Active</FilterLink> {", "}
+        <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
     </p>
 )
+Footer.contextTypes = {
+    store: React.PropTypes.object
+};
 
 const getVisibleTodos = (todos, filter) => {
     switch (filter) {
@@ -27,7 +30,8 @@ const getVisibleTodos = (todos, filter) => {
     }
 }
 
-const AddTodo = ({ store }) => {
+// 2nd argument in a functional component is the context.
+const AddTodo = (props, { store }) => {
     let input;
     return (
         <form onSubmit={(e) => {
@@ -44,10 +48,13 @@ const AddTodo = ({ store }) => {
         </form>
     );
 }
+AddTodo.contextTypes = {
+    store: React.PropTypes.object
+};
 
 class VisibleTodoList extends Component {
     componentDidMount () {
-        const { store } = this.props;
+        const { store } = this.context;
         this.unsubscribe = store.subscribe(() =>
             this.forceUpdate()
         );
@@ -59,7 +66,7 @@ class VisibleTodoList extends Component {
 
     render () {
         const props = this.props;
-        const { store } = props;
+        const { store } = this.context;
         const state = store.getState();
 
         return (
@@ -80,18 +87,42 @@ class VisibleTodoList extends Component {
         );
     }
 }
+VisibleTodoList.contextTypes = {
+    store: React.PropTypes.object
+};
 
 // General approach:
 // Extract presentational components
 // If there is too much boilerplate passing props through,
 //     then create containers around them that load the data and specify the behavior.
-const TodoApp = ({ store }) => (
+const TodoApp = () => (
     <div>
-        <AddTodo store={store} />
-        <Footer store={store} />
-        <VisibleTodoList store={store} />
+        <AddTodo />
+        <Footer />
+        <VisibleTodoList />
     </div>
 );
 
+// Create a "wormhole" from the Provider component to all the children views.
+// Context should usually only be used for dependency injection.
+class Provider extends Component {
+    getChildContext () {
+        return {
+            store: this.props.store
+        };
+    }
+
+    render () {
+        return this.props.children;
+    }
+}
+Provider.childContextTypes = {
+    store: React.PropTypes.object
+};
+
 // The root of the the Todo page.
-export default () => <TodoApp store={createStore(todoApp)} />;
+export default () => (
+    <Provider store={createStore(todoApp)}>
+        <TodoApp />
+    </Provider>
+);
